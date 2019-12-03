@@ -1,0 +1,64 @@
+asyncapi: 2.0.0
+info:
+  title: Solace AsyncAPI Generator Test
+  version: 1.0.0
+  description: |
+    Tests the event portal generator.
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0'
+  x-java-package: 'com.solace.asyncapi'
+  x-maven-artifact-id: 'asyncapi-test'
+  x-maven-group-id: 'com.solace'
+id: 'urn:solace-test'
+channels:
+  solace/order/{action}/1/{trace}/{span}:
+    x-java-class: 'OrderChannel'
+    parameters:
+      action:
+        description: The action associated with the message
+        schema:
+          enum: [
+            'buyItem',
+            'returnItem'
+          ]
+      trace:
+        description: The trace ID
+        schema:
+          type: string
+      span:
+        description: The span ID
+        schema:
+          type: integer
+    publish:
+      message:
+        name: OrderMessage
+        $ref: '#/components/messages/OrderMessage'
+    subscribe:
+      message:
+        name: OrderMessage
+        $ref: '#/components/messages/OrderMessage'
+components:
+  messages:
+    OrderMessage:
+      name: orderMessage
+      summary: An order message
+      headers:
+        type: object
+        properties:
+          messageId:
+            type: string
+      payload:
+        $ref: '#/components/schemas/Order'
+  schemas:
+    Order:
+      title: Order
+      type: object
+      properties:
+        orderId:
+          type: integer
+          minimum: 0
+          description: An id number.
+        orderDescription:
+          type: string
+          description: Some text.
