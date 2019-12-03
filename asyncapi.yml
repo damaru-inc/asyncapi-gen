@@ -1,3 +1,5 @@
+# params: java-package maven-artifact-id maven-group-id
+# node cli.js -o $OUTPUT_DIR -p maven-group-id=my.org asyncapi.yml solace-lib
 asyncapi: 2.0.0
 info:
   title: Solace AsyncAPI Generator Test
@@ -8,7 +10,7 @@ info:
     name: Apache 2.0
     url: 'https://www.apache.org/licenses/LICENSE-2.0'
   x-java-package: 'com.solace.asyncapi'
-  x-maven-artifact-id: 'asyncapi-test'
+  x-maven-artifact-id: 'asyncapi-gen'
   x-maven-group-id: 'com.solace'
 id: 'urn:solace-test'
 channels:
