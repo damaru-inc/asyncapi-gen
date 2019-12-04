@@ -1,6 +1,7 @@
 # params: java-package maven-artifact-id maven-group-id
 # node cli.js -o $OUTPUT_DIR -p maven-group-id=my.org asyncapi.yml solace-lib
 asyncapi: 2.0.0
+defaultContentType: 'application/xml'
 info:
   title: Solace AsyncAPI Generator Test
   version: 1.0.0
@@ -45,6 +46,7 @@ components:
     OrderMessage:
       name: orderMessage
       summary: An order message
+      contentType: 'application/json'
       headers:
         type: object
         properties:

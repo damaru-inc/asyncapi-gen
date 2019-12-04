@@ -6,7 +6,6 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solacesystems.jcsmp.BytesXMLMessage;
 import com.solacesystems.jcsmp.JCSMPException;
 import com.solacesystems.jcsmp.JCSMPFactory;
@@ -28,7 +27,7 @@ public class OrderChannel {
     @Autowired
     private SolaceSession solaceSession;
     private JCSMPSession jcsmpSession;
-    private ObjectMapper mapper = new ObjectMapper();
+    private Serializer<Order> serializer;
     private TextMessage textMessage = JCSMPFactory.onlyInstance().createMessage(TextMessage.class);
     private XMLMessageProducer producer;
     XMLMessageConsumer consumer;
@@ -36,6 +35,7 @@ public class OrderChannel {
     @PostConstruct
     public void init() throws Exception {
         jcsmpSession = solaceSession.getSession();
+        serializer = SerializerFactory.getSerializer("application/json", Order.class);
     }
 
     public void subscribe(SubscribeListener listener) throws Exception {
@@ -59,14 +59,14 @@ public class OrderChannel {
     public void sendOrderMessage(OrderMessage orderMessage, Action action, String trace, int span) throws Exception {
         Topic topic = formatTopic(action, trace, span);
         Order payload = orderMessage.getPayload();
-        String payloadString = mapper.writeValueAsString(payload);
+        String payloadString = serializer.serialize(payload);
         textMessage.setText(payloadString);
         producer.send(textMessage, topic);
     }
    
     public void sendOrder(Order order, Action action, String trace, int span) throws Exception {
         Topic topic = formatTopic(action, trace, span);
-        String payloadString = mapper.writeValueAsString(order);
+        String payloadString = serializer.serialize(order);
         textMessage.setText(payloadString);
         producer.send(textMessage, topic);
     }
@@ -107,7 +107,7 @@ public class OrderChannel {
             TextMessage textMessage = (TextMessage) bytesMessage;
             Order payload;
             try {
-                payload = mapper.readValue(textMessage.getText(), Order.class);
+                payload = serializer.deserialize(textMessage.getText());
                 OrderMessage  orderMessage = new OrderMessage();
                 orderMessage.setPayload(payload);
                 orderMessage.setTopic(bytesMessage.getDestination().getName());
