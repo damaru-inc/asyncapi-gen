@@ -15,8 +15,9 @@ public class OrderMessage {
         return topic;
     }
 
-    public void setTopic(String topic) {
+    public OrderMessage setTopic(String topic) {
         this.topic = topic;
+        return this;
     }
 
     // Headers with their getters and setters.
@@ -28,9 +29,10 @@ public class OrderMessage {
         return messageId;
     }
 
-    public void setMessageId( String messageId ) {
+    public OrderMessage setMessageId( String messageId ) {
         this.messageId = messageId;
         headers.put("messageId", messageId);
+        return this;
     }
 
 
@@ -43,7 +45,8 @@ public class OrderMessage {
         return order;
     }
 
-    public void setPayload(Order order) {
+    public OrderMessage setPayload(Order order) {
         this.order = order;
+        return this;
     }
 }
