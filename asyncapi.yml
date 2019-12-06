@@ -1,5 +1,6 @@
+# vim: ts=2:sw=2:sts=2:expandtab:
 # params: java-package maven-artifact-id maven-group-id
-# node cli.js -o $OUTPUT_DIR -p maven-group-id=my.org asyncapi.yml solace-lib
+# example run: node cli.js -o $OUTPUT_DIR -p maven-group-id=my.org asyncapi.yml solace-lib
 asyncapi: 2.0.0
 defaultContentType: 'application/xml'
 info:
@@ -37,6 +38,9 @@ channels:
       message:
         name: OrderMessage
         $ref: '#/components/messages/OrderMessage'
+      bindings:
+        solace:
+          deliveryMode: direct
     subscribe:
       message:
         name: OrderMessage

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.solacesystems.jcsmp.BytesXMLMessage;
+import com.solacesystems.jcsmp.DeliveryMode;
 import com.solacesystems.jcsmp.JCSMPException;
 import com.solacesystems.jcsmp.JCSMPFactory;
 import com.solacesystems.jcsmp.JCSMPSession;
@@ -36,6 +37,13 @@ public class OrderChannel {
     public void init() throws Exception {
         jcsmpSession = solaceSession.getSession();
         serializer = SerializerFactory.getSerializer("application/json", Order.class);
+ 
+    }
+
+    public void initPublisher(PublishListener publishListener) throws Exception {
+    	PublishEventHandler handler = new PublishEventHandler(publishListener);
+    	producer = jcsmpSession.getMessageProducer(handler);
+        textMessage.setDeliveryMode(DeliveryMode.DIRECT);
     }
 
     public void subscribe(SubscribeListener listener) throws Exception {
@@ -44,10 +52,6 @@ public class OrderChannel {
     	Topic topic = JCSMPFactory.onlyInstance().createTopic(SUBSCRIBE_TOPIC);
     	jcsmpSession.addSubscription(topic);
     	consumer.start();
-    }
-    public void initPublisher(PublishListener publishListener) throws Exception {
-    	PublishEventHandler handler = new PublishEventHandler(publishListener);
-    	producer = jcsmpSession.getMessageProducer(handler);
     }
 
     private Topic formatTopic(Action action, String trace, int span) {
