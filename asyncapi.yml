@@ -41,16 +41,20 @@ channels:
       bindings:
         solace:
           deliveryMode: direct
+    bindings:
+      solace:
+        is: topic
+        queue:
+          name: orderQueue
+  orderQueue:
+    x-java-class: 'OrderQueueChannel'
     subscribe:
       message:
         name: OrderMessage
         $ref: '#/components/messages/OrderMessage'
     bindings:
       solace:
-        is: topic
-        queue:
-          name: orderQueue
-          exclusive: true
+        is: queue
 components:
   messages:
     OrderMessage:
