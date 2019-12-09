@@ -37,7 +37,7 @@ public class OrderChannel {
     public void init() throws Exception {
         jcsmpSession = solaceSession.getSession();
         serializer = SerializerFactory.getSerializer("application/json", Order.class);
- 
+        provisionQueue();
     }
 
     public void initPublisher(PublishListener publishListener) throws Exception {
@@ -145,5 +145,15 @@ public class OrderChannel {
             listener.onResponse(messageId);
         }
     }
+
+    public void setupQueue() {
+        final Queue queue = JCSMPFactory.onlyInstance().createQueue("orderQueue");
+        final EndpointProperties endpointProps = new EndpointProperties();
+        endpointProps.setPermission(EndpointProperties.PERMISSION_DELETE);
+        endpointProps.setAccessType(EndpointProperties.ACCESSTYPE_EXCLUSIVE);
+        jcsmpSession.provision(queue, endpointProps, JCSMPSession.FLAG_IGNORE_ALREADY_EXISTS);
+        
+    }
+
 }
 
