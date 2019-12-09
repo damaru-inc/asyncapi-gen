@@ -9,22 +9,22 @@ private String orderDescription;
 
 
 public int getOrderId() {
-    return orderId;
+	return orderId;
 }
 
 public Order setOrderId( int orderId ) {
-    this.orderId = orderId;
-    return this;
+	this.orderId = orderId;
+	return this;
 }
 
 
 public String getOrderDescription() {
-    return orderDescription;
+	return orderDescription;
 }
 
 public Order setOrderDescription( String orderDescription ) {
-    this.orderDescription = orderDescription;
-    return this;
+	this.orderDescription = orderDescription;
+	return this;
 }
 
 
