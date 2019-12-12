@@ -1,6 +1,4 @@
-# vim: ts=2:sw=2:sts=2:expandtab:
-# params: java-package maven-artifact-id maven-group-id
-# example run: node cli.js -o $OUTPUT_DIR -p maven-group-id=my.org asyncapi.yml solace-lib
+# vim: set ts=2 sw=2 sts=2 expandtab :
 asyncapi: 2.0.0
 defaultContentType: 'application/xml'
 info:
@@ -40,7 +38,11 @@ channels:
         $ref: '#/components/messages/OrderMessage'
       bindings:
         solace:
-          deliveryMode: direct
+          deliveryMode: persistent
+    subscribe:
+      message:
+        name: OrderMessage
+        $ref: '#/components/messages/OrderMessage'
     bindings:
       solace:
         is: topic
@@ -71,12 +73,45 @@ components:
   schemas:
     Order:
       title: Order
-      type: object
       properties:
         orderId:
           type: integer
-          minimum: 0
-          description: An id number.
         orderDescription:
           type: string
-          description: Some text.
+        price:
+          type: number
+        customer:
+          $ref: '#/components/schemas/Account'
+        shipping:
+          title: Shipping
+          type: object
+          properties:
+            method:
+              enum: [
+                'post',
+                'courier'
+              ]
+            cost:
+              type: number
+            shipTo:
+              $ref: '#/components/schemas/Address'
+    Account:
+      title: Account
+      properties:
+        accountId:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+    Address:
+      title: Address
+      properties:
+        streetAddress:
+          type: string
+        city:
+          type: string
+        province:
+          type: string
+        postalCode:
+          type: string

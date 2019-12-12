@@ -19,6 +19,8 @@ import com.solacesystems.jcsmp.JCSMPStreamingPublishEventHandler;
 
 import com.solacesystems.jcsmp.Queue;
 import com.solacesystems.jcsmp.TextMessage;import com.solacesystems.jcsmp.Topic;
+import com.solacesystems.jcsmp.XMLMessageConsumer;
+import com.solacesystems.jcsmp.XMLMessageListener;
 import com.solacesystems.jcsmp.XMLMessageProducer;
 
 @Component
@@ -26,6 +28,7 @@ public class OrderChannel {
 
 	// Channel name: solace/order/{action}/1/{trace}/{span}
 	private static final String PUBLISH_TOPIC = "solace/order/%s/1/%s/%d";
+	private static final String SUBSCRIBE_TOPIC = "solace/order/*/1/*/*";
 
 	@Autowired
 	private SolaceSession solaceSession;
@@ -33,6 +36,7 @@ public class OrderChannel {
 	private Serializer<Order> serializer;
 	private TextMessage textMessage = JCSMPFactory.onlyInstance().createMessage(TextMessage.class);
 	private XMLMessageProducer producer;
+	private XMLMessageConsumer consumer;
 
 	@PostConstruct
 	public void init() throws Exception {
@@ -44,9 +48,17 @@ public class OrderChannel {
 	public void initPublisher(PublishListener publishListener) throws Exception {
 		PublishEventHandler handler = new PublishEventHandler(publishListener);
 		producer = jcsmpSession.getMessageProducer(handler);
-		textMessage.setDeliveryMode(DeliveryMode.DIRECT);
+		textMessage.setDeliveryMode(DeliveryMode.PERSISTENT);
 	}
 
+
+	public void subscribe(SubscribeListener listener) throws Exception {
+		MessageListener messageListener = new MessageListener(listener);
+		consumer = jcsmpSession.getMessageConsumer(messageListener);
+		Topic topic = JCSMPFactory.onlyInstance().createTopic(SUBSCRIBE_TOPIC);
+		jcsmpSession.addSubscription(topic);
+		consumer.start();
+	}
 
 	private Topic formatTopic(Action action, String trace, int span) {
 		String topicString = String.format(PUBLISH_TOPIC, action, trace, span);
@@ -71,12 +83,50 @@ public class OrderChannel {
 
 	public void close() {
 
+		if (consumer != null) {
+			consumer.close();		
+		}
+
 		solaceSession.close();
 	}
 
 
 	public static enum Action { buyItem,returnItem }
 
+	public interface SubscribeListener {
+		public void onReceive(OrderMessage orderMessage);
+		public void handleException(Exception exception);
+	}
+	
+	class MessageListener implements XMLMessageListener {
+
+		SubscribeListener listener;
+		
+		public MessageListener(SubscribeListener listener) {
+			this.listener = listener;
+		}
+		
+		@Override
+		public void onException(JCSMPException exception) {
+			listener.handleException(exception);
+		}
+
+		@Override
+		public void onReceive(BytesXMLMessage bytesMessage) {
+			TextMessage textMessage = (TextMessage) bytesMessage;
+			Order payload;
+			try {
+				payload = serializer.deserialize(textMessage.getText());
+				OrderMessage  orderMessage = new OrderMessage();
+				orderMessage.setMessageId(textMessage.getMessageId());
+				orderMessage.setPayload(payload);
+				orderMessage.setTopic(bytesMessage.getDestination().getName());
+				listener.onReceive(orderMessage);
+			} catch (Exception exception) {
+				listener.handleException(exception);
+			}			
+		}
+	}
 
 	public interface PublishListener {
 		public void onResponse(String messageId);

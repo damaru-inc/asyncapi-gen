@@ -84,6 +84,7 @@ public class OrderQueueChannel {
 			try {
 				payload = serializer.deserialize(textMessage.getText());
 				OrderMessage  orderMessage = new OrderMessage();
+				orderMessage.setMessageId(textMessage.getMessageId());
 				orderMessage.setPayload(payload);
 				orderMessage.setTopic(bytesMessage.getDestination().getName());
 				listener.onReceive(orderMessage);

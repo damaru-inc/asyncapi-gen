@@ -5,8 +5,8 @@ import java.util.HashMap;
 public class OrderMessage { 
 
 
-	// Topic: This field allows the client to see the topic
-	// of a received messages. It is not necessary to set this 
+	// topic and messageId: These fields allow the client to see the topic
+	// and messageId of a received messages. It is not necessary to set these 
 	// when publishing.
 
 	private String topic;
@@ -17,6 +17,17 @@ public class OrderMessage {
 
 	public OrderMessage setTopic(String topic) {
 		this.topic = topic;
+		return this;
+	}
+
+	private String messageId;
+
+	public String getMessageId() {
+		return messageId;
+	}
+
+	public OrderMessage setMessageId(String messageId) {
+		this.messageId = messageId;
 		return this;
 	}
 
