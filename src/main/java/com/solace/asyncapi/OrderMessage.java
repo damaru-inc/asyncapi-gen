@@ -34,15 +34,15 @@ public class OrderMessage {
 	// Headers with their getters and setters.
 	private HashMap<String, Object> headers = new HashMap<>();
 
-	private String messageId;
+	private String messageCreator;
 
-	public String getMessageId() {
-		return messageId;
+	public String getMessageCreator() {
+		return messageCreator;
 	}
 
-	public OrderMessage setMessageId( String messageId ) {
-		this.messageId = messageId;
-		headers.put("messageId", messageId);
+	public OrderMessage setMessageCreator( String messageCreator ) {
+		this.messageCreator = messageCreator;
+		headers.put("messageCreator", messageCreator);
 		return this;
 	}
 
