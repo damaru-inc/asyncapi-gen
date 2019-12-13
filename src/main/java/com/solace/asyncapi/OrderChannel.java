@@ -41,14 +41,14 @@ public class OrderChannel {
 	@PostConstruct
 	public void init() throws Exception {
 		jcsmpSession = solaceSession.getSession();
-		serializer = SerializerFactory.getSerializer("application/json", Order.class);
+		serializer = SerializerFactory.getSerializer(null, Order.class);
 		provisionQueue();
 	}
 
 	public void initPublisher(PublishListener publishListener) throws Exception {
 		PublishEventHandler handler = new PublishEventHandler(publishListener);
 		producer = jcsmpSession.getMessageProducer(handler);
-		textMessage.setDeliveryMode(DeliveryMode.PERSISTENT);
+		textMessage.setDeliveryMode(DeliveryMode.DIRECT);
 	}
 
 
@@ -60,13 +60,13 @@ public class OrderChannel {
 		consumer.start();
 	}
 
-	private Topic formatTopic(Action action, String trace, int span) {
+	private Topic formatTopic(Action action, String trace, Integer span) {
 		String topicString = String.format(PUBLISH_TOPIC, action, trace, span);
 		Topic topic = JCSMPFactory.onlyInstance().createTopic(topicString);
 		return topic;
 	}
 
-	public void sendOrderMessage(OrderMessage orderMessage, Action action, String trace, int span) throws Exception {
+	public void sendOrderMessage(OrderMessage orderMessage, Action action, String trace, Integer span) throws Exception {
 		Topic topic = formatTopic(action, trace, span);
 		Order payload = orderMessage.getPayload();
 		String payloadString = serializer.serialize(payload);
@@ -74,7 +74,7 @@ public class OrderChannel {
 		producer.send(textMessage, topic);
 	}
    
-	public void sendOrder(Order order, Action action, String trace, int span) throws Exception {
+	public void sendOrder(Order order, Action action, String trace, Integer span) throws Exception {
 		Topic topic = formatTopic(action, trace, span);
 		String payloadString = serializer.serialize(order);
 		textMessage.setText(payloadString);

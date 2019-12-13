@@ -4,17 +4,17 @@ package com.solace.asyncapi;
 
 public  class Order {
 
-	private int orderId;
+	private Integer orderId;
 	private String orderDescription;
-	private double price;
+	private Double price;
 	private Account customer;
 	private Shipping shipping;
 
-	public int getOrderId() {
+	public Integer getOrderId() {
 		return orderId;
 	}
 
-	public Order setOrderId(int orderId) {
+	public Order setOrderId(Integer orderId) {
 		this.orderId = orderId;
 		return this;
 	}
@@ -28,11 +28,11 @@ public  class Order {
 		return this;
 	}
 
-	public double getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public Order setPrice(double price) {
+	public Order setPrice(Double price) {
 		this.price = price;
 		return this;
 	}
@@ -59,7 +59,7 @@ public  class Order {
 	public static  class Shipping {
 
 		private Method method;
-		private double cost;
+		private Double cost;
 		private Address shipTo;
 
 		public Method getMethod() {
@@ -74,11 +74,11 @@ public  class Order {
 		public static enum Method { post,courier }
 
 
-		public double getCost() {
+		public Double getCost() {
 			return cost;
 		}
 
-		public Shipping setCost(double cost) {
+		public Shipping setCost(Double cost) {
 			this.cost = cost;
 			return this;
 		}

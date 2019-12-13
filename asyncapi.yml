@@ -1,21 +1,26 @@
 # vim: set ts=2 sw=2 sts=2 expandtab :
 asyncapi: 2.0.0
+id: 'urn:solace-test'
 defaultContentType: 'application/xml'
 info:
   title: Solace AsyncAPI Generator Test
   version: 1.0.0
   description: |
-    Tests the event portal generator.
+    Tests the event portal code generator.
   license:
     name: Apache 2.0
     url: 'https://www.apache.org/licenses/LICENSE-2.0'
   x-java-package: 'com.solace.asyncapi'
-  x-maven-artifact-id: 'asyncapi-gen'
-  x-maven-group-id: 'com.solace'
-id: 'urn:solace-test'
+  x-artifact-id: 'asyncapi-gen'
+  x-group-id: 'com.solace'
 channels:
   solace/order/{action}/1/{trace}/{span}:
     x-java-class: 'OrderChannel'
+    bindings:
+      solace:
+        is: topic
+        queue:
+          name: orderQueue
     parameters:
       action:
         description: The action associated with the message
@@ -38,25 +43,20 @@ channels:
         $ref: '#/components/messages/OrderMessage'
       bindings:
         solace:
-          deliveryMode: persistent
+          deliveryMode: direct
     subscribe:
       message:
         name: OrderMessage
         $ref: '#/components/messages/OrderMessage'
-    bindings:
-      solace:
-        is: topic
-        queue:
-          name: orderQueue
   orderQueue:
     x-java-class: 'OrderQueueChannel'
-    subscribe:
-      message:
-        name: OrderMessage
-        $ref: '#/components/messages/OrderMessage'
     bindings:
       solace:
         is: queue
+    subscribe:
+      message:
+        name: OrderMessage
+        $ref: '#/components/messages/OrderMessage'
 components:
   messages:
     OrderMessage:

@@ -4,15 +4,15 @@ package com.solace.asyncapi;
 
 public  class Account {
 
-	private int accountId;
+	private Integer accountId;
 	private String firstName;
 	private String lastName;
 
-	public int getAccountId() {
+	public Integer getAccountId() {
 		return accountId;
 	}
 
-	public Account setAccountId(int accountId) {
+	public Account setAccountId(Integer accountId) {
 		this.accountId = accountId;
 		return this;
 	}
