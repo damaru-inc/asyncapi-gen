@@ -52,7 +52,7 @@ public class OrderChannel {
 	}
 
 
-	public void subscribe(SubscribeListener listener) throws Exception {
+	public void subscribe(OrderMessage.SubscribeListener listener) throws Exception {
 		MessageListener messageListener = new MessageListener(listener);
 		consumer = jcsmpSession.getMessageConsumer(messageListener);
 		Topic topic = JCSMPFactory.onlyInstance().createTopic(SUBSCRIBE_TOPIC);
@@ -93,16 +93,11 @@ public class OrderChannel {
 
 	public static enum Action { buyItem,returnItem }
 
-	public interface SubscribeListener {
-		public void onReceive(OrderMessage orderMessage);
-		public void handleException(Exception exception);
-	}
-	
 	class MessageListener implements XMLMessageListener {
 
-		SubscribeListener listener;
+		OrderMessage.SubscribeListener listener;
 		
-		public MessageListener(SubscribeListener listener) {
+		public MessageListener(OrderMessage.SubscribeListener listener) {
 			this.listener = listener;
 		}
 		
@@ -128,11 +123,6 @@ public class OrderChannel {
 		}
 	}
 
-	public interface PublishListener {
-		public void onResponse(String messageId);
-		public void handleException(String messageId, Exception exception, long timestamp);
-	}
-	
 	class PublishEventHandler implements JCSMPStreamingPublishEventHandler {
 		
 		PublishListener listener;

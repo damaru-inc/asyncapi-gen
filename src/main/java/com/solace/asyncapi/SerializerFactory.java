@@ -1,5 +1,5 @@
-package com.solace.asyncapi;
 
+package com.solace.asyncapi;
 public class SerializerFactory {
 
 	private static String JSON = "application/json";

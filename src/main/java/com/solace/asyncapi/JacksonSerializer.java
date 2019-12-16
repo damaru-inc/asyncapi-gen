@@ -1,5 +1,5 @@
-package com.solace.asyncapi;
 
+package com.solace.asyncapi;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JacksonSerializer<T> implements Serializer<T> {

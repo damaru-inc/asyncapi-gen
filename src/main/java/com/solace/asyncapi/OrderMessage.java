@@ -60,4 +60,11 @@ public class OrderMessage {
 		this.order = order;
 		return this;
 	}
+
+	// Listers
+
+	public interface SubscribeListener {
+		public void onReceive(OrderMessage orderMessage);
+		public void handleException(Exception exception);
+	}
 }

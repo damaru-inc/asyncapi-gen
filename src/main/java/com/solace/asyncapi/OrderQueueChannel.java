@@ -38,7 +38,7 @@ public class OrderQueueChannel {
 
 
 
-	public void subscribe(SubscribeListener listener) throws Exception {
+	public void subscribe(OrderMessage.SubscribeListener listener) throws Exception {
 		MessageListener messageListener = new MessageListener(listener);
 		final Queue queue = JCSMPFactory.onlyInstance().createQueue("orderQueue");
 		ConsumerFlowProperties flowProps = new ConsumerFlowProperties();
@@ -59,16 +59,11 @@ public class OrderQueueChannel {
 	}
 
 
-	public interface SubscribeListener {
-		public void onReceive(OrderMessage orderMessage);
-		public void handleException(Exception exception);
-	}
-	
 	class MessageListener implements XMLMessageListener {
 
-		SubscribeListener listener;
+		OrderMessage.SubscribeListener listener;
 		
-		public MessageListener(SubscribeListener listener) {
+		public MessageListener(OrderMessage.SubscribeListener listener) {
 			this.listener = listener;
 		}
 		
