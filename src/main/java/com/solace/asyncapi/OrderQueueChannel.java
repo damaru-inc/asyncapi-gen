@@ -32,7 +32,7 @@ public class OrderQueueChannel {
 	@PostConstruct
 	public void init() throws Exception {
 		jcsmpSession = solaceSession.getSession();
-		serializer = SerializerFactory.getSerializer(null, Order.class);
+		serializer = SerializerFactory.getSerializer("application/json", Order.class);
 		provisionQueue();
 	}
 

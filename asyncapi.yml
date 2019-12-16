@@ -95,6 +95,19 @@ components:
               type: number
             shipTo:
               $ref: '#/components/schemas/Address'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+    Item:
+      title: Item
+      properties:
+        catalogId:
+          type: integer
+        description:
+          type: string
+        price:
+          type: number
     Account:
       title: Account
       properties:

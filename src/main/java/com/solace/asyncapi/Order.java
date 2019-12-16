@@ -9,6 +9,7 @@ public  class Order {
 	private Double price;
 	private Account customer;
 	private Shipping shipping;
+	private Item[] items;
 
 	public Integer getOrderId() {
 		return orderId;
@@ -94,5 +95,14 @@ public  class Order {
 	}
 
 
+
+	public Item[] getItems() {
+		return items;
+	}
+
+	public Order setItems(Item[] items) {
+		this.items = items;
+		return this;
+	}
 }
 
